@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
-import WeatherDisplay from './weather';
-import 'bootstrap/dist/css/bootstrap.css';
+import throttle from 'lodash.throttle';
 import {
   Navbar,
   NavItem,
@@ -12,6 +10,9 @@ import {
   FormControl
 } from 'react-bootstrap';
 import 'bootswatch/superhero/bootstrap.css';
+
+import './App.css';
+import WeatherDisplay from './weather';
 
 const PLACES = [
   { name: 'Palo Alto' },
@@ -35,10 +36,16 @@ class App extends Component {
   }
 
   onCityNameChange = e => {
-    this.setState({
-      cityNameFromInput: e.target.value
-    });
+    this.throttledCityNameChange(e.target.value);
   };
+
+  throttledCityNameChange = throttle(
+    value =>
+      this.setState({
+        cityNameFromInput: value
+      }),
+    300
+  );
 
   render() {
     const { activePlace, cityNameFromInput } = this.state;
